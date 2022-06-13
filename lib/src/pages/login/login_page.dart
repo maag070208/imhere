@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:imhere/src/pages/login/login_controller.dart';
+import 'package:reactive_forms/reactive_forms.dart';
 
 class LoginPage extends StatelessWidget {
-  LoginController loginController = Get.put(LoginController());
+  LoginController con = Get.put(LoginController());
 
   @override
   Widget build(BuildContext context) {
@@ -29,8 +30,8 @@ class LoginPage extends StatelessWidget {
     return Container(
       margin: EdgeInsets.only(
         top: MediaQuery.of(context).size.height * 0.33,
-        left: 50,
-        right: 50,
+        left: 35,
+        right: 35,
       ),
       decoration: BoxDecoration(color: Colors.white, boxShadow: <BoxShadow>[
         BoxShadow(
@@ -40,10 +41,16 @@ class LoginPage extends StatelessWidget {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            _textYourInfo(),
-            _textFieldEmail(),
-            _textFieldPassword(),
-            _buttonLogin()
+            ReactiveForm(formGroup: con.login_form,
+                child: Column(
+                  children: <Widget>[
+                    _textYourInfo(),
+                    _textFieldEmail(),
+                    _textFieldPassword(),
+                    _buttonLogin()
+                  ],
+                )
+            )
           ],
         ),
       ),
@@ -64,11 +71,13 @@ class LoginPage extends StatelessWidget {
   Widget _textFieldEmail() {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 0),
-      child: TextField(
-        controller: loginController.emailController,
+      child: ReactiveTextField(
+        formControlName: 'email',
         keyboardType: TextInputType.emailAddress,
-        decoration:
-            InputDecoration(hintText: 'Email', prefixIcon: Icon(Icons.email)),
+        decoration: InputDecoration(
+            hintText: 'Correo electronico',
+            prefixIcon: Icon(Icons.email)
+        ),
       ),
     );
   }
@@ -76,12 +85,14 @@ class LoginPage extends StatelessWidget {
   Widget _textFieldPassword() {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 0),
-      child: TextField(
-        controller: loginController.passwordController,
-        obscureText: true,
+      child: ReactiveTextField(
+        formControlName: 'password',
         keyboardType: TextInputType.text,
-        decoration:
-            InputDecoration(hintText: 'Password', prefixIcon: Icon(Icons.lock)),
+        obscureText: true,
+        decoration: InputDecoration(
+            hintText: 'Contraseña',
+            prefixIcon: Icon(Icons.lock)
+        ),
       ),
     );
   }
@@ -91,7 +102,7 @@ class LoginPage extends StatelessWidget {
       width: double.infinity,
       margin: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
       child: ElevatedButton(
-          onPressed: () => loginController.login(),
+          onPressed: () => con.login(),
           style: ElevatedButton.styleFrom(
               padding: EdgeInsets.symmetric(vertical: 12)),
           child: Text('LOGIN', style: TextStyle(color: Colors.black))),
@@ -137,7 +148,7 @@ class LoginPage extends StatelessWidget {
             style: TextStyle(fontSize: 17, color: Colors.black)),
         SizedBox(width: 7),
         GestureDetector(
-          onTap: () => loginController.goToRegisterPage(),
+          onTap: () => con.goToRegisterPage(),
           child: Text('Registrate aqui',
               style: TextStyle(
                   fontSize: 17,

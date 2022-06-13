@@ -1,105 +1,86 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:imhere/src/pages/register/register_controller.dart';
+import 'package:reactive_forms/reactive_forms.dart';
+
+
+
 
 class RegisterPage extends StatelessWidget {
-  const RegisterPage({Key? key}) : super(key: key);
+  RegisterController con = Get.put(RegisterController());
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
-        //POSICIONAR elementos uno ensima del otro
         children: [
           _backgroundCover(context),
           _boxForm(context),
-          _imageUser(),
+          _imageUser(context),
           _buttonBack()
         ],
-      )
-    );
-  }
-
-  Widget _imageUser(){
-    return SafeArea(
-      child: Container(
-        margin: EdgeInsets.only(top:30),
-        alignment: Alignment.topCenter,
-        child: GestureDetector(
-          onTap: (){},
-          child: CircleAvatar(
-            backgroundImage: AssetImage('assets/img/user_profile.png'),
-            radius: 60,
-            backgroundColor: Colors.white,
-          ),
-        ),
       ),
     );
   }
 
-
-  Widget _backgroundCover(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: MediaQuery.of(context).size.height * 0.42,
-      color: Colors.amber,
-      alignment: Alignment.topCenter,
-    );
-  }
-
-
-  Widget _buttonBack(){
+  Widget _buttonBack() {
     return SafeArea(
         child: Container(
-          margin: EdgeInsets.only(left: 10),
+          margin: EdgeInsets.only(left: 20),
           child: IconButton(
             onPressed: () => Get.back(),
             icon: Icon(
-                Icons.arrow_back_ios,
-                color: Colors.white,
-                size: 30,
+              Icons.arrow_back_ios,
+              color: Colors.white,
+              size: 30,
             ),
           ),
         )
     );
   }
 
-
-  Widget _boxForm(BuildContext context) {
+  Widget _backgroundCover(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.60,
-      margin: EdgeInsets.only(
-        top: MediaQuery.of(context).size.height * 0.30,
-        left: 40,
-        right: 40,
-      ),
-      decoration: BoxDecoration(color: Colors.white, boxShadow: <BoxShadow>[
-        BoxShadow(
-            color: Colors.black54, blurRadius: 15, offset: Offset(0, 0.75))
-      ]),
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            _textRegister(),
-            _textFieldEmail(),
-            _textFieldName(),
-            _textFieldLastName(),
-            _textFielPhone(),
-            _textFieldPassword(),
-            _textFieldConfirmPassword(),
-            _buttonRegister()
-          ],
-        ),
-      ),
+      width: double.infinity,
+      height: MediaQuery.of(context).size.height * 0.35,
+      color: Colors.amber,
     );
   }
 
-  Widget _textRegister() {
+  Widget _boxForm(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 30, bottom: 10),
-      child: Text(
-        'Registrarse',
-        style: TextStyle(
-            color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
+      height: MediaQuery.of(context).size.height * 0.65,
+      margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.3, left: 35, right: 35),
+      decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: <BoxShadow>[
+            BoxShadow(
+                color: Colors.black54,
+                blurRadius: 15,
+                offset: Offset(0, 0.75)
+            )
+          ]
+      ),
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            ReactiveForm(formGroup: con.register_form,
+                child: Column(
+                  children: <Widget>[
+                    _textYourInfo(),
+                    _textFieldEmail(),
+                    _textFieldName(),
+                    _textFieldPaternalLastName(),
+                    _textFieldMaternalLastName(),
+                    _textFieldPhone(),
+                    _textFieldPassword(),
+                    _textFieldConfirmPassword(),
+                    _buttonRegister(context)
+                  ],
+                )
+            )
+          ],
+        ),
       ),
     );
   }
@@ -107,10 +88,13 @@ class RegisterPage extends StatelessWidget {
   Widget _textFieldEmail() {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 0),
-      child: TextField(
+      child: ReactiveTextField(
+        formControlName: 'email',
         keyboardType: TextInputType.emailAddress,
-        decoration:
-        InputDecoration(hintText: 'Email', prefixIcon: Icon(Icons.email)),
+        decoration: InputDecoration(
+            hintText: 'Correo electronico',
+            prefixIcon: Icon(Icons.email)
+        ),
       ),
     );
   }
@@ -118,32 +102,55 @@ class RegisterPage extends StatelessWidget {
   Widget _textFieldName() {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 0),
-      child: TextField(
+      child: ReactiveTextField(
+        formControlName: 'name',
         keyboardType: TextInputType.text,
-        decoration:
-        InputDecoration(hintText: 'Nombre', prefixIcon: Icon(Icons.account_circle)),
+        decoration: InputDecoration(
+            hintText: 'Nombre',
+            prefixIcon: Icon(Icons.person)
+        ),
       ),
     );
   }
 
-  Widget _textFieldLastName() {
+  Widget _textFieldPaternalLastName() {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 0),
-      child: TextField(
+      child: ReactiveTextField(
+        formControlName: 'paternalLastname',
         keyboardType: TextInputType.text,
-        decoration:
-        InputDecoration(hintText: 'Apellido', prefixIcon: Icon(Icons.account_circle_outlined)),
+        decoration: InputDecoration(
+            hintText: 'Apellido',
+            prefixIcon: Icon(Icons.person_outline)
+        ),
       ),
     );
   }
 
-  Widget _textFielPhone() {
+  Widget _textFieldMaternalLastName() {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 0),
-      child: TextField(
+      child: ReactiveTextField(
+        formControlName: 'maternalLastname',
+        keyboardType: TextInputType.text,
+        decoration: InputDecoration(
+            hintText: 'Apellido',
+            prefixIcon: Icon(Icons.person_outline)
+        ),
+      ),
+    );
+  }
+
+  Widget _textFieldPhone() {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 0),
+      child: ReactiveTextField(
+        formControlName: 'phone',
         keyboardType: TextInputType.phone,
-        decoration:
-        InputDecoration(hintText: 'Telefono', prefixIcon: Icon(Icons.phone)),
+        decoration: InputDecoration(
+            hintText: 'Telefono',
+            prefixIcon: Icon(Icons.phone)
+        ),
       ),
     );
   }
@@ -151,11 +158,14 @@ class RegisterPage extends StatelessWidget {
   Widget _textFieldPassword() {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 0),
-      child: TextField(
-        obscureText: true,
+      child: ReactiveTextField(
+        formControlName: 'password',
         keyboardType: TextInputType.text,
-        decoration:
-        InputDecoration(hintText: 'Contraseña', prefixIcon: Icon(Icons.lock)),
+        obscureText: true,
+        decoration: InputDecoration(
+            hintText: 'Contraseña',
+            prefixIcon: Icon(Icons.lock)
+        ),
       ),
     );
   }
@@ -163,28 +173,66 @@ class RegisterPage extends StatelessWidget {
   Widget _textFieldConfirmPassword() {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 0),
-      child: TextField(
-        obscureText: true,
+      child: ReactiveTextField(
+        formControlName: 'confirmPassword',
         keyboardType: TextInputType.text,
-        decoration:
-        InputDecoration(hintText: 'Confirmar contraseña', prefixIcon: Icon(Icons.lock)),
+        obscureText: true,
+        decoration: InputDecoration(
+            hintText: 'Confirmar Contraseña',
+            prefixIcon: Icon(Icons.lock_outline)
+        ),
       ),
     );
   }
 
-  Widget _buttonRegister() {
+  Widget _buttonRegister(BuildContext context) {
     return Container(
       width: double.infinity,
-      margin: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+      margin: EdgeInsets.symmetric(horizontal: 40, vertical: 40),
       child: ElevatedButton(
-          onPressed: () => {},
+          onPressed: () => con.register(context),
           style: ElevatedButton.styleFrom(
-              padding: EdgeInsets.symmetric(vertical: 12)),
-          child: Text('REGISTRARSE', style: TextStyle(color: Colors.black))),
+              padding: EdgeInsets.symmetric(vertical: 15)
+          ),
+          child: Text(
+            'REGISTRARSE',
+            style: TextStyle(
+                color: Colors.black
+            ),
+          )
+      ),
     );
   }
 
+  Widget _imageUser(BuildContext context) {
+    return SafeArea(
+      child: Container(
+        margin: EdgeInsets.only(top: 25),
+        alignment: Alignment.topCenter,
+        child: GestureDetector(
+            onTap: () => {},
+            child: GetBuilder<RegisterController> (
+              builder: (value) => CircleAvatar(
+                backgroundImage:AssetImage('assets/img/user_profile.png') as ImageProvider,
+                radius: 60,
+                backgroundColor: Colors.white,
+              ),
+            )
+        ),
+      ),
+    );
+  }
 
+  Widget _textYourInfo() {
+    return Container(
+      margin: EdgeInsets.only(top: 40, bottom: 30),
+      child: Text(
+        'INGRESA ESTA INFORMACION',
+        style: TextStyle(
+          color: Colors.black,
+        ),
+      ),
+    );
+  }
 
 }
-
